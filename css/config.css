@@ -142,7 +142,7 @@
     position: relative;
 }
 .spdDisplay {
-    color: lime;
+    color: rgb(47, 0, 255);
     width: 200px;
     font-size: 30px;
 }
