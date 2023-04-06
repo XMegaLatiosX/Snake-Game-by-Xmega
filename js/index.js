@@ -4,6 +4,7 @@ canvas.height   = 576
 const c = canvas.getContext("2d")
 let interval = 600
 let playing = false
+let paused = false
 
 
 const background = new Sprite ({
@@ -27,6 +28,7 @@ function load() {
 }
 
 function settingsTab() {
+    paused = true
     //MAIN DIV FOR CONFIG SCREEN
     const configDiv = document.createElement('div')
     configDiv.className = "configDiv"
@@ -83,6 +85,8 @@ function settingsTab() {
     setDifficulty.appendChild(spdUp)
 
     function close_config() {
+        paused = false
+        if(btn.style.display == "none") update()
         ids(".content").removeChild(configDiv)
     }
     function changeSpd(value) {
@@ -108,6 +112,7 @@ function start() {
     update()
 }
 function gameOver(points) {
+    btn.style.display = "block"
     if(points >= 140) {
         title.innerHTML = "YOU WON!!"
         btn.innerHTML = "GG"
@@ -116,7 +121,17 @@ function gameOver(points) {
         btn.innerHTML = "retry!"
     }
     title.innerHTML += " points: " + (points - 2)
-    btn.onclick = function() {window.location.reload()}
+    btn.onclick = function() {
+        title.innerHTML = ""
+        background.draw()
+
+        player = new Head ({
+            position: {x:4 * 64, y: 4 * 64},
+            imgSrc: "./assets/head-right.png"
+        })
+        update()
+        btn.style.display = "none"
+    }
     btn.style.display = "block"
     title.style.display = "block"
 }
@@ -124,7 +139,7 @@ function gameOver(points) {
 //-------------------------------------------------------update()------------------------------------------//
 let timerId
 function update() {
-    if(!player.dead){
+    if(!player.dead && !paused){
         timerId = setTimeout(update, interval)
         background.draw()
         player.update()
